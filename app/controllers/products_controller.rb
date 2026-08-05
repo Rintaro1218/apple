@@ -3,7 +3,10 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
-    @products = Product.all
+    @q = params[:q]
+    @category = params[:category]
+    @categories = Product.distinct.where.not(category: [ nil, "" ]).order(:category).pluck(:category)
+    @products = Product.search_by_name(@q).filter_by_category(@category).order(:name)
   end
 
   # GET /products/1 or /products/1.json

@@ -15,11 +15,26 @@
   <% end %>
 </div>
 
+<%= form_with url: products_path, method: :get, class: "mb-6 flex flex-wrap items-center gap-2.5" do %>
+  <%= text_field_tag :q, @q, placeholder: "商品名で検索",
+        class: "min-w-0 flex-1 rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 transition placeholder:text-gray-400 focus:border-gray-900 focus:bg-white focus:outline-none focus:ring-4 focus:ring-gray-900/10" %>
+  <%= select_tag :category,
+        options_for_select([ [ "すべてのカテゴリ", "" ] ] + @categories.map { |c| [ c, c ] }, @category),
+        class: "rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-gray-900 transition focus:border-gray-900 focus:bg-white focus:outline-none focus:ring-4 focus:ring-gray-900/10" %>
+  <%= submit_tag "検索",
+        class: "cursor-pointer rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-gray-700" %>
+<% end %>
+
 <% if @products.any? %>
   <div id="products" class="space-y-2.5">
     <% @products.each do |product| %>
       <%= render product %>
     <% end %>
+  </div>
+<% elsif @q.present? || @category.present? %>
+  <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center">
+    <p class="text-sm text-gray-500">条件に一致する商品はありません。</p>
+    <%= link_to "検索条件をクリア", products_path, class: "mt-3 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800" %>
   </div>
 <% else %>
   <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center">
