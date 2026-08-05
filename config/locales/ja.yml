@@ -7,6 +7,7 @@ ja:
         name: 名前
         quantity: 数量
         category: カテゴリ
+        status: ステータス
     errors:
       messages:
         blank: を入力してください
