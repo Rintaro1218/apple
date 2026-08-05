@@ -1,0 +1,28 @@
+# PostgreSQL データベースの設定ファイルです。
+#
+# ローカル開発（docker compose）では、環境変数で接続先を切り替えます。
+# docker-compose.yml が POSTGRES_HOST / POSTGRES_USER / POSTGRES_PASSWORD を渡します。
+# 本番（Fly.io）では DATABASE_URL という環境変数を使います。
+#
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "password") %>
+
+development:
+  <<: *default
+  database: vibe_coding_inventory_app_rails8_development
+
+test:
+  <<: *default
+  database: vibe_coding_inventory_app_rails8_test
+
+# 本番環境では Fly.io が設定する DATABASE_URL をそのまま使います。
+production:
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  url: <%= ENV["DATABASE_URL"] %>

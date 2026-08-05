@@ -1,0 +1,36 @@
+# ローカル開発用の構成ファイルです。
+# `docker compose up` で、アプリ（web）とデータベース（db）が同時に立ち上がります。
+
+services:
+  # データベース（PostgreSQL）のコンテナ
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Rails アプリ本体のコンテナ
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    # 起動時に、古い pid ファイルを消し → DBを準備（作成＋マイグレーション＋初期データ）
+    # → Tailwind CSS をビルド → 以降の編集に追従するよう監視（バックグラウンド）→ サーバー起動
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails tailwindcss:build && (bin/rails tailwindcss:watch &) && bin/rails server -b 0.0.0.0"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      RAILS_ENV: development
+    volumes:
+      # 手元のコードをコンテナ内に反映（編集がすぐ反映されます）
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

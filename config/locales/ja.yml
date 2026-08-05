@@ -1,0 +1,19 @@
+ja:
+  activerecord:
+    models:
+      product: 商品
+    attributes:
+      product:
+        name: 名前
+        quantity: 数量
+        category: カテゴリ
+    errors:
+      messages:
+        blank: を入力してください
+  helpers:
+    submit:
+      product:
+        create: 登録する
+        update: 更新する
+  errors:
+    format: "%{attribute}%{message}"
